@@ -1,0 +1,45 @@
+<h1 align="center">Комментарии к пользователю <%= @user.username %></h1>
+
+<% comments_arr = Comment.where(commented_user_id: @user.id, support: false) %>
+<% s = 0 %>
+<% for comment in comments_arr %>
+	<% s += comment.score %>
+<% end %>
+
+<h5 align="center">
+	<% if comments_arr.length != 0 %>
+		<%= "Средняя оценка: #{s / comments_arr.length}" %>
+	<% else %>
+		<%= "Средняя оценка отсутствует." %>
+	<% end %>
+</h5>
+<br/>
+
+<% if comments_arr.length == 0 %>
+	<p style="font-size: 24px;">
+		Не оставлено ни одного комментария.
+	</p>
+<% else %>
+	<% comments_arr.each do |comment| %>
+		<p style="border: solid black 2px; padding: 20px; border-radius: 5px; width: 50%; font-size: 18px;">
+			<span style="font-weight: bold;">
+				<%= "#{User.find(comment.commenting_user_id).username} (id: #{comment.commenting_user_id})" %>
+			</span>
+			<br/>
+			<%= "Оценка: #{comment.score}/5" %>
+			<br/>
+			<span style="font-style: italic;">
+				<%= comment.body %>
+			</span>
+			<br/>
+			<br/>
+			<%= "#{comment.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+		</p>
+	<% end %>
+<% end %>
+
+<% if session[:user_id] %>
+<div class="fixed-bottom mb-3" style="text-align: center;">
+	<%= link_to 'Оставить комментарий', write_comment_page_path(@user.id), class: 'nav-link active text-primary' %>
+</div>
+<% end %>

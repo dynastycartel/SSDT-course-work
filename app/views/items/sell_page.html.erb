@@ -1,0 +1,16 @@
+<h1 align="center">Выставить предмет на продажу</h1>
+<br/>
+
+<%= form_with url: '/items/sell_publish', method: :post do |form| %>
+	<p>
+		<%= form.label 'Идентификатор Вашего предмета', class: 'form-label' %>
+		<%= form.text_field :item_id, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Цена', class: 'form-label' %>
+		<%= form.number_field :price, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.submit 'Выставить на продажу', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>

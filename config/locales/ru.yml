@@ -1,0 +1,25 @@
+ru:
+  activerecord:
+    models:
+      user: 'Пользователь'
+      item: 'Предмет'
+    attributes:
+      user:
+        email: 'Адрес эл. почты'
+        username: 'Псевдоним'
+        password: 'Пароль'
+        password_confirmation: 'Пароли'
+        secret_word: 'Секретное слово'
+      item:
+        recommended_price: 'Рекомендованная стоимость'
+        name: 'Имя'
+      sellingitem:
+        price: 'Цена'
+    errors:
+      messages:
+        format: '%{attribute}%{message}'
+        confirmation: 'не совпадают'
+        record_invalid: 'неверные параметры модели'
+  support:
+    array:
+      last_word_connector: ' и '

@@ -1,0 +1,124 @@
+<h1 align="center">Существующие предложения</h1>
+<br/>
+
+<% sell_offers = SellingItem.all.reverse() + SellingAccount.all.reverse() + ExchangeItem.all.reverse() %>
+
+<% if sell_offers.length == 0 %>
+	<p style="font-size: 24px;">
+		В данный момент нет ни одного предложения обмена или продажи.
+	</p>
+<% else %>
+	<% sell_offers.each_slice(3) do |offers| %>
+		<div class="row">
+			<% offers.each do |offer| %>
+				<div class="col">
+					<div class="card" style="width: 18rem;">
+						<% if offer.attribute_names.include? 'item_id' %>
+						<!-- Карточка предмета на продаже --> 
+							<div class="card-body">
+								<h5 class="card-title">
+									<%= "#{Item.find(offer.item_id).name} (id: #{offer.item_id})" %>
+								</h5>
+								<h6 class="card-subtitle mb-2 text-muted">
+									<%= "Предмет, продажа" %>
+								</h6>
+								<p class="card-text">
+									<%= "Игра - #{Item.find(offer.item_id).game}" %>
+									<br/>
+									<%= "Цена - #{offer.price} бонусов" %> 
+									<span style="font-style: italic;"><%= "(рекомендуется - #{Item.find(offer.item_id).recommended_price})" %></span>
+									<br/>
+									<%= "Редкость: #{Item.find(offer.item_id).rarity}" %>
+									<br/>
+									<br/>
+									<%= "#{offer.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+								</p>
+								<% acc_ids_arr = [] %>
+								<% GameAccount.where(user_id: session[:user_id]).each do |acc| %>
+									<% acc_ids_arr.append(acc.id) %>
+								<% end %>
+								<% if acc_ids_arr.include? offer.seller_account_id %>
+								<!-- Кнопка снятия предмета с продажи -->
+									<% puts session[:user_id] %>
+									<% puts offer.seller_account_id %>
+									<%= button_to 'Снять с продажи', item_cancel_sell_offer_path(offer.id), class: 'btn btn-outline-primary' %>
+								<% else %>
+								<!-- Кнопка покупки предмета -->
+									<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									  <div class="modal-dialog" role="document">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <h5 class="modal-title" id="exampleModalLabel">Введите идентификатор аккаунта, на который поступит купленный предмет</h5>
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									          <span aria-hidden="true">&times;</span>
+									        </button>
+									      </div>
+										    <div class="modal-body">
+										    	<%= form_with url: buy_item_path, method: :post do |form| %>
+										      	<%= form.number_field :account_id, class: 'form-control' %>
+										      	<%= hidden_field_tag 'offer_id', offer.id %>
+										      	<br/>
+										      	<%= form.submit 'Купить', class: 'btn btn-outline-primary' %>
+										    	<% end %>
+										    </div>
+										  </div>
+										</div>
+									</div>
+									<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal">
+  									Купить
+									</button>
+								<% end %>
+							</div>
+						<% elsif offer.attribute_names.include? 'game_account_id' %>
+						<!-- Карточка аккаунта на продаже -->
+							<div class="card-body">
+								<h5 class="card-title">
+									<%= "#{GameAccount.find(offer.game_account_id).login}" %>
+								</h5>
+								<h6 class="card-subtitle mb-2 text-muted">
+									Аккаунт, продажа
+								</h6>
+								<p class="card-text">
+									<%= "Цена - #{offer.price} бонусов" %> 
+									<span style="font-style: italic;"><%= "(рекомендуется - #{GameAccount.find(offer.game_account_id).recommended_price})" %></span>
+									<br/>
+									<%= "ID владельца - #{User.find(GameAccount.find(offer.game_account_id).user_id).id}" %>
+									<br/>
+									<br/>
+									<%= "#{offer.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+								</p>
+								<% if GameAccount.find(offer.game_account_id).user_id == session[:user_id] %>
+									<%= button_to 'Снять с продажи', acc_cancel_sell_offer_path(offer.id), class: 'btn btn-outline-primary' %>
+								<% else %>
+									<%= button_to 'Купить', acc_buy_path(offer.id), class: 'btn btn-outline-primary' %>
+								<% end %>
+							</div>
+						<% elsif offer.attribute_names.include? 'posted_item_id' %>
+							<div class='card-body'>
+								<h5 class="card-title">
+									<%= "#{Item.find(offer.posted_item_id).name} (id: #{offer.posted_item_id})" %>
+								</h5>
+								<h6 class="card-subtitle mb-2 text-muted">
+									Предмет, обмен
+								</h6>
+								<p class="card-text">
+									<%= "Запрашиваемый предмет: #{offer.desired_item_name}" %>
+									<br/>
+									<br/>
+									<br/>
+									<%= "#{offer.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+								</p>
+								<% if GameAccount.find(Item.find(offer.posted_item_id).game_account_id).user_id == session[:user_id] %>
+									<%= button_to 'Снять с обмена', item_cancel_trade_offer_path(offer.id), class: "btn btn-outline-primary" %>
+								<% else %>
+									<%= button_to 'Обменять', trade_confirm_path(offer.id), class: "btn btn-outline-primary" %>
+								<% end %>
+							</div>
+						<% end %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+		<br/>
+	<% end %>
+<% end %>

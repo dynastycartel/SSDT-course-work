@@ -1,0 +1,12 @@
+<h1 align="center">Оставить заявку</h1>
+
+<%= form_with url: '/users/request_publish', method: :post do |form| %>
+	<p>
+		<%= form.label 'Ваш вопрос', class: 'form-label' %>
+		<%= form.text_field :body, class: 'form-control' %>
+	</p>
+	<%= form.hidden_field :commenting_user_id, value: session[:user_id] %> 
+	<p>
+		<%= form.submit 'Отправить', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>

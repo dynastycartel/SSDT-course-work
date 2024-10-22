@@ -1,0 +1,60 @@
+<h1 align="center">Все пользователи</h1>
+<br/>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">ID</th>
+			<th scope="col">Эл. почта</th>
+			<th scope="col">Имя пользователя</th>
+			<th scope="col">Кол-во аккаунтов</th>
+			<th scope="col">Кол-во предметов</th>
+			<th scope="col">Баланс</th>
+			<th scope="col">Рейтинг</th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for user in User.all %>
+			<tr>
+				<% accs_arr = GameAccount.where(user_id: user.id) %>
+				<% items_number = 0 %>
+				<% for acc in accs_arr %>
+					<% items_number += Item.where(game_account_id: acc.id).length %>
+				<% end %>
+
+				<th scope="row"><%= user.id %></th>
+				<td><%= user.email %></td>
+				<td><%= user.username %></td>
+				<td><%= accs_arr.length %></td>
+				<td><%= items_number %></td>
+				<td><%= user.balance %></td>
+
+				<% comments_arr = Comment.where(commented_user_id: user.id, support: false) %>
+				<% avg_rating = 0 %>
+				<% for comment in comments_arr %>
+					<% avg_rating += comment.score %>
+				<% end %>
+
+				<% if comments_arr.length != 0 %>
+					<% avg_rating = avg_rating / comments_arr.length %>
+					<td><%= avg_rating %></td>
+				<% else %>
+					<td>-</td>
+				<% end %>
+
+				<% unless user.banned %>
+					<td><%= button_to 'Заблокировать', user_block_path(user.id), class: 'nav-link active text-primary' %></td>
+				<% else %>
+					<td><%= button_to 'Разблокировать', user_unblock_path(user.id), class: 'nav-link active text-primary' %></td>
+				<% end %>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+
+
+
+
+

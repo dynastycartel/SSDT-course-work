@@ -1,0 +1,19 @@
+<h1 align="center">Настройки профиля</h1>
+
+<%= form_with url: '/users/profile_update', method: :post do |form| %>
+  <p>
+    <%= form.label 'Имя пользователя', class: 'form-label' %>
+    <%= form.text_field :new_username, class: 'form-control', value: "#{User.find(session[:user_id]).username}" %>
+  </p>
+  <p>
+    <%= form.label 'Фотография профиля', class: 'form-label' %>
+    <%= form.file_field :new_profile_pic, class: 'form-control' %>
+  </p>
+  <p>
+    <%= form.label 'Описание профиля', class: 'form-label' %>
+    <%= form.text_field :new_bio, class: 'form-control', value: "#{User.find(session[:user_id]).bio}" %>
+  </p>
+  <p>
+    <%= form.submit 'Сохранить изменения', class: 'btn btn-outline-primary' %>
+  </p>
+<% end %>

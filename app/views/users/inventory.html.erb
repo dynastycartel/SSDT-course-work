@@ -1,0 +1,45 @@
+<h1 align="center">Привязанные аккаунты и хранящиеся на них предметы</h1>
+<br/>
+<br/>
+<br/>
+
+<% if params[:id].to_i == session[:user_id].to_i %>
+	<% accounts_arr = GameAccount.where(user_id: params[:id]).reverse() %>
+<% else %>
+	<% accounts_arr = GameAccount.where(user_id: params[:id], confirmed: true).reverse() %>
+<% end %>
+
+<% if accounts_arr.length == 0 %>
+	<p style="font-size: 24px;">
+		Не привязано ни одного аккаунта.
+	</p>
+<% else %>
+	<% for i in 0...accounts_arr.length %>
+		<p style="font-size: 24px; font-weight: bold;">
+			<%= "#{i+1}. #{accounts_arr[i].login} (id: #{accounts_arr[i].id}, рекомендованная стоимость: #{accounts_arr[i].recommended_price})" %>
+			<% if accounts_arr[i].selling %>
+				[Выставлен на продажу/обмен]
+			<% end %>
+			<% unless accounts_arr[i].confirmed %>
+				<%= button_to 'Подтвердить', confirm_acc_path(accounts_arr[i].id), class: 'nav-link active text-primary' %>
+			<% end %>	
+		</p>
+		<% items_arr = Item.where(game_account_id: accounts_arr[i].id) %>
+		<span style="font-size: 18px;">
+			<% if items_arr.length == 0 %>
+				&emsp;На аккаунте нет ни одного предмета.
+			<% else %>
+				<% for item in items_arr %>
+					<p>
+						&emsp;
+						<span style="font-style: italic;"><%= "#{item.name}" %></span> 
+						<%= "(#{item.game}, #{item.rarity}, рекомендованная стоимость: #{item.recommended_price}, id: #{item.id})" %> 
+						<% if item.selling %>
+							[Выставлен на продажу/обмен]
+						<% end %>
+					</p>
+				<% end %>
+			<% end %>
+		</span>
+	<% end %>
+<% end %>

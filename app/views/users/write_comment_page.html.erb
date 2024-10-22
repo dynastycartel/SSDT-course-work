@@ -1,0 +1,18 @@
+<h1 align="center">Оставить комментарий пользователю <%= @user.username %></h1>
+
+<%= form_with url: '/users/comment_publish', method: :post do |form| %>
+	<p>
+		<%= form.label 'Комментарий', class: 'form-label' %>
+		<%= form.text_field :body, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Оценка (от 1 до 5)' %>
+		<%= form.number_field :score, class: 'form-control' %>
+	</p>
+	<%= form.hidden_field :commented_user_id, :value => @user.id %>
+	<%= form.hidden_field :commenting_user_id, :value => session[:user_id] %>
+	<%= form.hidden_field :publish_datetime, :value => DateTime.now %>
+	<p>
+		<%= form.submit 'Отправить', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>

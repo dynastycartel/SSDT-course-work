@@ -1,0 +1,16 @@
+<h1 align="center">Ответить на заявку</h1>
+<br/>
+
+<%= form_with url: '/users/reply_publish', method: :post do |form| %>
+	<p>
+		<%= form.label 'ID пользователя', class: 'form-label' %>
+		<%= form.number_field :commented_user_id, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Ваш ответ', class: 'form-label' %>
+		<%= form.text_field :body, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.submit 'Отправить', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>

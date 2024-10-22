@@ -1,0 +1,15 @@
+<h1 align="center">Привязать игровой аккаунт</h1>
+
+<%= form_with url: '/game_accounts/link', method: :post do |form| %>
+	<p>
+		<%= form.label 'Логин', class: 'form-label' %>
+		<%= form.text_field :account_login, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Пароль', class: 'form-label' %>
+		<%= form.password_field :account_password, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.submit 'Привязать', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>

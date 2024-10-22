@@ -1,0 +1,74 @@
+<h1 align="center">Техподдержка</h1>
+<br/>
+
+<% all_requests = Comment.where(support: true) %>
+<% if all_requests.length == 0 %>
+<p style="font-size: 24px;">
+	Запросов на техподдержку нет.
+</p>
+<% else %>
+	<% if User.find(session[:user_id]).superuser %>
+		<% for support_request in all_requests %>
+			<% if User.find(support_request.commenting_user_id).superuser %>
+				<p style="border: solid black 2px; padding: 20px; border-radius: 5px; width: 50%; font-size: 18px;">
+					<span style="font-weight: bold;">
+						<%= "ID пользователя: #{support_request.commenting_user_id} (администратор)" %>
+					</span>
+					<br/>
+					<%= "Ответ: #{support_request.body}" %>
+					<br/>
+					<br/>
+					<%= "#{support_request.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+				</p>
+			<% else %>
+				<p style="border: solid black 2px; padding: 20px; border-radius: 5px; width: 50%; font-size: 18px;">
+					<span style="font-weight: bold;">
+						<%= "ID пользователя: #{support_request.commenting_user_id}" %>
+					</span>
+					<br/>
+					<%= "Вопрос: #{support_request.body}" %>
+					<br/>
+					<br/>
+					<%= "#{support_request.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+				</p>
+			<% end %>
+		<% end %>
+	<% else %>
+		<% my_requests = Comment.where(commenting_user_id: session[:user_id], support: true) + Comment.where(commented_user_id: session[:user_id], support: true)%>
+		<% for support_request in my_requests %>
+			<% if User.find(support_request.commenting_user_id).superuser %>
+				<p style="border: solid black 2px; padding: 20px; border-radius: 5px; width: 50%; font-size: 18px;">
+					<span style="font-weight: bold;">
+						<%= "ID пользователя: #{support_request.commenting_user_id} (администратор)" %>
+					</span>
+					<br/>
+					<%= "Ответ: #{support_request.body}" %>
+					<br/>
+					<br/>
+					<%= "#{support_request.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+				</p>
+			<% else %>
+				<p style="border: solid black 2px; padding: 20px; border-radius: 5px; width: 50%; font-size: 18px;">
+					<span style="font-weight: bold;">
+						<%= "ID пользователя: #{support_request.commenting_user_id}" %>
+					</span>
+					<br/>
+					<%= "Вопрос: #{support_request.body}" %>
+					<br/>
+					<br/>
+					<%= "#{support_request.publish_datetime.strftime("%d.%m.%Y %H:%M")}" %>
+				</p>
+			<% end %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% if session[:user_id] and not User.find_by(id: session[:user_id]).superuser %>
+<div class="fixed-bottom mb-3" style="text-align: center;">
+	<%= link_to 'Оставить заявку', '/users/write_request_page', class: 'nav-link active text-primary' %>
+</div>
+<% else %>
+<div class="fixed-bottom mb-3" style="text-align: center;">
+	<%= link_to 'Ответить на заявку', '/users/reply_request_page', class: 'nav-link active text-primary' %>
+</div>
+<% end %>

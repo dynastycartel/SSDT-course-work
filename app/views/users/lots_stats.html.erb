@@ -1,0 +1,41 @@
+<h1 align="center">Все лоты </h1>
+<br/>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">ID лота</th>
+			<th scope="col">Имя предмета</th>
+			<th scope="col">ID предмета</th>
+			<th scope="col">Игра</th>
+			<th scope="col">Редкость</th>
+			<th scope="col">Цена</th>
+			<th scope="col">ID продавца</th>
+			<th scope="col">Ср. цена</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for lot in SellingItem.all %>
+			<tr>
+				<th scope="row"><%= lot.id %></th>
+				<td><%= Item.find(lot.item_id).name %></td>
+				<td><%= lot.item_id %></td>
+				<td><%= Item.find(lot.item_id).game %></td>
+				<td><%= Item.find(lot.item_id).rarity %></td>
+				<td><%= lot.price %></td>
+				<td><%= lot.seller_account_id %></td>
+				
+				<% all_items_of_a_kind = Item.where(name: Item.find(lot.item_id).name, selling: true) %>
+				<% all_lots_of_a_kind = [] %>
+				<% total_cost = 0 %>
+				<% for item in all_items_of_a_kind %>
+					<% all_lots_of_a_kind.append(SellingItem.find_by(item_id: item.id)) %>
+					<% total_cost += SellingItem.find_by(item_id: item.id).price %>
+				<% end %>
+				<% avg_price = total_cost / all_items_of_a_kind.length %>
+
+				<td><%= avg_price %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

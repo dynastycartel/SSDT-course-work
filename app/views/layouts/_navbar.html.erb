@@ -1,0 +1,59 @@
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+  <div class="container-fluid">
+    <%= link_to 'GameScape Market', home_path, class: 'navbar-brand' %>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <% if session[:user_id] %>
+          <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Выставить
+            </a>
+            <ul class="dropdown-menu">
+              <li><%= link_to 'Аккаунт', "/game_accounts/sell_page", class: "dropdown-item" %></li>
+              <li><%= link_to 'Предмет', "/items/add_page", class: "dropdown-item" %></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Привязать аккаунт', "/game_accounts/link_page", class: 'nav-link active' %>
+          </li>
+          <% if User.find(session[:user_id]).superuser %>
+            <li class="nav-item dropdown">
+              <a class="nav-link active dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Статистика
+              </a>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Лоты', '/users/lots_stats', class: 'dropdown-item' %></li>
+                <li><%= link_to 'Пользователи', '/users/users_stats', class: 'dropdown-item' %></li>
+              </ul>
+            </li>
+          <% end %>
+          <li class="nav-item">
+            <%= link_to 'Техподдержка', '/users/support', class: 'nav-link active' %>
+          </li>
+        <% end %>
+      </ul>
+      <ul class="navbar-nav">
+        <% unless session[:user_id] %>
+          <li>
+            <%= link_to 'Войти', '/sessions/new', class: 'nav-link active' %>
+          </li>
+          <li class="nav-link active">|</li>
+          <li>
+            <%= link_to 'Зарегистрироваться', '/users/new', class: 'nav-link active' %>
+          </li>
+        <% else %>
+          <li>
+            <%= link_to 'Профиль', show_profile_path(session[:user_id]), class: 'nav-link active' %>
+          </li>
+          <li class="nav-link active">|</li>
+          <li>
+            <%= link_to 'Выйти', '/sessions/destroy', data: { turbo_method: "post" }, class: 'nav-link active' %>
+          </li>
+        <% end %>        
+      </ul>
+    </div>
+  </div>
+</nav>

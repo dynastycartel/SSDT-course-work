@@ -1,0 +1,16 @@
+<h1 align="center">Обмен предмета на предмет</h1>
+<br/>
+
+<%= form_with url: '/items/trade_publish', method: :post do |form| %>
+	<p>
+		<%= form.label 'Идентификатор Вашего предмета', class: 'form-label' %>
+		<%= form.number_field :offered_item_id, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Имя запрашиваемого предмета' %>
+		<%= form.text_field :desired_item_name, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.submit 'Выставить на обмен', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>

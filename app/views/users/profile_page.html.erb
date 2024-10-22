@@ -1,0 +1,53 @@
+<div class="row justify-content-around">
+	<div class="col-3">
+		<p style="font-size: 24px">
+			<span style="font-weight: bold; font-style: italic;">Имя пользователя:</span> <%= @user.username %>
+		</p>
+		<% if @user.id == session[:user_id] %>
+		<p style="font-size: 24px">
+			<span style="font-weight: bold; font-style: italic;">Адрес эл. почты:</span> <%= @user.email %>
+		</p>
+		<p style="font-size: 24px;">
+			<span style="font-weight: bold; font-style: italic;">Баланс:</span> <%= @user.balance %> бонусов
+		</p>
+		<% end %>
+		<p style="font-size: 24px;">
+			<span style="font-weight: bold; font-style: italic;">Количество привязанных аккаунтов:</span> 
+			<%= GameAccount.where(user_id: @user.id, confirmed: true).length %>
+		</p>
+		<p style="font-size: 24px;">
+			<span style="font-weight: bold; font-style: italic;">Количество предметов:</span> 
+			<% accounts_arr = GameAccount.where(user_id: @user.id, confirmed: true) %>
+			<% items_number = 0 %>
+			<% accounts_arr.each do |acc| %>
+			<% items_number += Item.where(game_account_id: acc.id).length %>
+			<% end %>
+			<%= items_number %>
+		</p>
+		<p style="font-size: 24px; text-decoration: underline; font-style: italic;">
+			<%= link_to 'Посмотреть инвентарь', show_inventory_path(@user.id), class: 'nav-link active' %>
+		</p>
+		<p style="font-size: 24px; text-decoration: underline; font-style: italic;">
+			<%= link_to "Посмотреть комментарии (#{Comment.where(commented_user_id: @user.id, support: false).length})", show_comments_path(@user.id), class: 'nav-link active' %>
+		</p>
+		<% if @user.banned %>
+			<p style="font-size: 24px; font-style: italic;">
+				ПОЛЬЗОВАТЕЛЬ ЗАБЛОКИРОВАН
+			</p>
+		<% end %>
+	</div>
+	<div class="col-3">
+		<p>
+			<%= image_tag @user.profile_pic.variant(resize_to_fill: [175, 175]), class: 'rounded-circle border border-dark' %>
+		</p>
+		<p>
+			<%= @user.bio %>
+		</p>
+	</div>
+</div>
+
+<% if @user.id == session[:user_id] %>
+<div class="fixed-bottom mb-3" style="text-align: center;">
+	<%= link_to 'Редактировать профиль', '/users/profile_settings', class: 'nav-link active text-primary' %>
+</div>
+<% end %>

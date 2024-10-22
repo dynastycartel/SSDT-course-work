@@ -1,0 +1,28 @@
+<h2 align="center">Регистрация</h2>
+<br/>
+
+<%= form_with url: '/users/create', method: :post do |form| %>
+	<p>
+		<%= form.label 'Адрес эл. почты', class: 'form-label' %>
+		<%= form.email_field :email, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Псевдоним', class: 'form-label' %>
+		<%= form.text_field :username, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Пароль', class: 'form-label' %>
+		<%= form.password_field :password, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Подтверждение пароля', class: 'form-label' %>
+		<%= form.password_field :password_confirmation, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.label 'Секретное слово (на случай забытого пароля)' %>
+		<%= form.text_field :secret_word, class: 'form-control' %>
+	</p>
+	<p>
+		<%= form.submit 'Зарегистрироваться', class: 'btn btn-outline-primary' %>
+	</p>
+<% end %>
